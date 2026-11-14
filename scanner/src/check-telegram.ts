@@ -52,8 +52,24 @@ try {
   ).json();
   if (!sent.ok) {
     bad(`Не вдалося надіслати повідомлення: ${sent.description}`);
-    if (/chat not found|bot can't initiate|blocked/i.test(sent.description))
-      console.log(`   Відкрийте https://t.me/${me.result.username} і натисніть Start, а також перевірте chat id.`);
+    if (/chat not found|bot can't initiate|blocked/i.test(sent.description)) {
+      if (chatId === token.split(':')[0]) console.log('   Ви вказали id самого бота (цифри з токена). Потрібен ВАШ id.');
+      // Шукаємо chat id у повідомленнях, які бот отримав
+      const upd = await (await fetch(`${api}/getUpdates`)).json();
+      const chats = new Map<number, string>();
+      for (const u of upd.result ?? []) {
+        const c = u.message?.chat;
+        if (c) chats.set(c.id, c.username ? `@${c.username}` : [c.first_name, c.last_name].filter(Boolean).join(' '));
+      }
+      if (chats.size) {
+        console.log('   Бот бачить повідомлення з таких чатів. Ваш chat id, швидше за все:');
+        for (const [id, name] of chats) console.log(`     TELEGRAM_CHAT_ID=${id}   (${name})`);
+        console.log('   Вставте цей рядок у .env, збережіть і запустіть перевірку ще раз.');
+      } else {
+        console.log(`   Відкрийте https://t.me/${me.result.username}, натисніть Start і надішліть боту будь-яке повідомлення.`);
+        console.log('   Потім запустіть цю перевірку ще раз: вона сама покаже ваш правильний chat id.');
+      }
+    }
     process.exit(1);
   }
   ok(`Повідомлення надіслано! Перевірте чат з @${me.result.username}`);
