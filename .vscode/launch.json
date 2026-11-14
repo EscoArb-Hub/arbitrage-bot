@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Сканер (налагодження)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/scanner",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["tsx", "--env-file-if-exists=../.env", "src/index.ts"],
+      "console": "integratedTerminal"
+    }
+  ]
+}
