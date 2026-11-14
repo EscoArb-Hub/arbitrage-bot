@@ -1,0 +1,15 @@
+{
+  "name": "arbitrage-bot",
+  "private": true,
+  "type": "module",
+  "workspaces": ["scanner", "dashboard"],
+  "scripts": {
+    "dev": "concurrently -n scanner,dashboard -c cyan,magenta \"npm run dev -w scanner\" \"npm run dev -w dashboard\"",
+    "start": "npm run build -w dashboard && npm run start -w scanner",
+    "typecheck": "npm run typecheck -w scanner && npm run typecheck -w dashboard",
+    "test": "npm test -w scanner"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
